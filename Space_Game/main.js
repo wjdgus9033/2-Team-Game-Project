@@ -20,7 +20,7 @@ let spaceshipY = canvas.height - 64; // 이미지 높이만큼 위로 올라오�
 let gameover = false; //true면 끝 false면 게임 중
 
 // 이미지 가져오기
-let backgroundspaceImage, gameoverImage, planetImage, spaceshipImage, bulletImage;
+let backgroundspaceImage, gameoverImage, alienImage, spaceshipImage, bulletImage;
 
 // 총알 배열
 let bulletList = [];
@@ -103,8 +103,8 @@ function loadImage() {
     gameoverImage = new Image();
     gameoverImage.src = "images/gameover.png";
 
-    planetImage = new Image();
-    planetImage.src = "images/planet.png";
+    alienImage = new Image();
+    alienImage.src = "images/alien.png";
 
     spaceshipImage = new Image();
     spaceshipImage.src = "images/spaceship.png"
@@ -139,7 +139,7 @@ function render() {
 
     // 행성 이미지생성
     for (let i = 0; i < enemyList.length; i++) {
-        ctx.drawImage(planetImage, enemyList[i].x, enemyList[i].y);
+        ctx.drawImage(alienImage, enemyList[i].x, enemyList[i].y);
     }
 }
 
