@@ -1,0 +1,10 @@
+a {
+    color: red;
+    /* 원하는 색상 */
+    text-decoration: none;
+    /* 밑줄 제거 */
+}
+
+a:hover {
+    color: blue;
+}
