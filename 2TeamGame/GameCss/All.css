@@ -4,7 +4,12 @@ a {
     text-decoration: none;
     /* 밑줄 제거 */
 }
-
 a:hover {
     color: blue;
+}
+.btn-primary{
+    display: block;
+    margin-left: auto;
+    width: fit-content;
+    font-weight: bold;
 }

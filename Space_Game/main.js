@@ -42,8 +42,8 @@ function Bullet() {
             const e = enemyList[i];
             const bulletW = 10; // 총알 너비
             const bulletH = 20; // 총알 높이
-            const enemyW = 40;  // 행성 너비
-            const enemyH = 40;  // 행성 높이
+            const enemyW = 40;  // 외계인 너비
+            const enemyH = 40;  // 외계인 높이
 
             const isHit = this.x < e.x + enemyW &&
                 this.x + bulletW > e.x &&
@@ -60,12 +60,12 @@ function Bullet() {
     }
 }
 
-// 행성 생성 좌표
+// 외계인 생성 좌표
 function randomValue(min, max) {
     let randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
     return randomNum;
 }
-// 행성
+// 외계인
 let enemyList = [];
 function Enemy() {
     this.x = 0;
@@ -137,7 +137,7 @@ function render() {
         }
     }
 
-    // 행성 이미지생성
+    // 외계인 이미지생성
     for (let i = 0; i < enemyList.length; i++) {
         ctx.drawImage(alienImage, enemyList[i].x, enemyList[i].y);
     }
@@ -187,7 +187,7 @@ function createBullet() {
     b.init();
 }
 
-// 초당 행성 생성
+// 초당 외계인 생성
 let enemyInterval;
 function createEnemy() {
     enemyInterval = setInterval(() => {
@@ -225,12 +225,7 @@ document.addEventListener("keyup", (e) => {
 });
 
 function update() {
-    // if (keys.ArrowRight) {
-    //     spaceshipX += 5;
-    // }
-    // if (keys.ArrowLeft) {
-    //     spaceshipX -= 5;
-    // }
+    
     const speed = 5;
     if (keys.ArrowRight) spaceshipX += speed;
     if (keys.ArrowLeft) spaceshipX -= speed;
@@ -253,7 +248,7 @@ function update() {
     // 총알 화면 벗어나면 제거
     bulletList = bulletList.filter(b => b.y > 0 && b.alive);
 
-    // 행성 움직이기
+    // 외계인 움직이기
     for (let i = 0; i < enemyList.length; i++) {
         enemyList[i].update();
     }
