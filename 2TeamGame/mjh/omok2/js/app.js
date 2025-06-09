@@ -1,5 +1,9 @@
 const container = document.getElementById("container");
 const canvasWrapper = document.getElementById("canvas-wrapper");
+const player1El = document.getElementById("player-1");
+const player2El = document.getElementById("player-2");
+const turnCountEl = document.getElementById("turn-count");
+const turnPlayerEl = document.getElementById("turn-player");
 let comboPatterns = [];
 
 const game = {

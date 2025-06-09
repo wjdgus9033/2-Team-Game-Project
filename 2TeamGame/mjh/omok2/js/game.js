@@ -1,19 +1,26 @@
 // --------------- 참조 함수 --------------
 
 function startFn() {
-    this.canvas.width = 720;
-    this.canvas.height = 720;
-    this.cellSize = ((this.canvas.width+this.canvas.height)/2) / this.boardCell;
-    this.context = this.canvas.getContext("2d");
-    this.canvas.id = "game-board";
-    this.canvas.addEventListener("click", handleClick);
-    canvasWrapper.insertBefore(this.canvas, canvasWrapper.childNodes[0]);
-    this.drawBoard();
-    this.createBoardStatus();
-    generateWinningCombos(this.boardCell,this.toWin);
-    console.log(this.boardStatus);
-}
+  this.canvas.width = 720;
+  this.canvas.height = 720;
+  this.canvas.style.display = "block";
+  this.cellSize = (this.canvas.width + this.canvas.height) / 2 / this.boardCell;
+  this.context = this.canvas.getContext("2d");
+  this.canvas.id = "game-board";
+  this.canvas.addEventListener("click", handleClick);
+  canvasWrapper.insertBefore(this.canvas, canvasWrapper.childNodes[0]);
+  this.drawBoard();
+  this.createBoardStatus();
+  generateWinningCombos(this.boardCell, this.toWin);
 
+  turnCountEl.textContent = `${this.currentRound}턴`;
+  turnPlayerEl.textContent = `${
+    this.player[this.activePlayer].name
+  }의 차례입니다.`;
+      player1El.style.background = "rgb(145, 236, 246)";
+  player1El.style.borderBottom = "3px solid rgb(22, 22, 22)";
+  console.log(this.boardStatus);
+}
 
 function handleClick(e) {
   const rect = game.canvas.getBoundingClientRect();
@@ -34,7 +41,6 @@ function handleClick(e) {
   checkGameOver(game.boardStatus, comboPatterns);
 
   game.switchPlayer();
-
 }
 
 function createBoardStatusFn() {
@@ -87,6 +93,7 @@ function drawStoneFn(row, col, color) {
 
 function switchPlayerFn() {
   this.activePlayer = this.activePlayer === 1 ? 2 : 1;
+  updateTurn(this.activePlayer);
 }
 
 function gameOverFn(playerNum) {
@@ -102,11 +109,28 @@ function gameOverFn(playerNum) {
   }
 }
 
+function updateTurn(player) {
+  turnCountEl.textContent = `${game.currentRound}턴`;
+  turnPlayerEl.textContent = `${game.player[player].name}의 차례입니다.`;
+
+  if (player === 1) {
+    player1El.style.background = "rgb(145, 236, 246)";
+    player2El.style.background = "inherit";
+    player1El.style.borderBottom = "3px solid rgb(22, 22, 22)";
+    player2El.style.borderBottom = "none";
+  } else {
+    player2El.style.background = "rgb(145, 236, 246)";
+    player1El.style.background = "inherit";
+    player2El.style.borderBottom = "3px solid rgb(255, 255, 255)";
+    player1El.style.borderBottom = "none";
+  }
+}
+
 // -------------------승리 체크용 기능 함수--------------- -
 
 function checkGameOver(status, combos) {
   game.currentRound++;
-  if (game.currentRound === (19 * 19) - 1) {
+  if (game.currentRound === 19 * 19) {
     return game.gameOver(-1);
   }
 
