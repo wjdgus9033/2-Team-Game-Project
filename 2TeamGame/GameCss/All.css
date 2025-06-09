@@ -1,3 +1,13 @@
+body{
+    background-image: url("../GameImg/game_body.jpg");
+}
+h1 {
+  font-family: 'Press Start 2P', cursive;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 50PX;
+  color:white;
+}
 a {
     color: red;
     /* 원하는 색상 */
@@ -13,3 +23,13 @@ a:hover {
     width: fit-content;
     font-weight: bold;
 }
+  .card img {
+    transition: transform 0.3s ease;
+  }
+
+  .card img:hover {
+    transform: scale(1.3);
+  }
+  .card{
+    background-color: rgba(255, 255, 255, 0.952);
+  }
