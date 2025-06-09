@@ -35,7 +35,7 @@ function Bullet() {
         bulletList.push(this);
     }
     this.update = function () {
-        this.y -= 7;
+        this.y -= 5;
     }
     this.checkHit = function () {
         for (let i = 0; i < enemyList.length; i++) {
