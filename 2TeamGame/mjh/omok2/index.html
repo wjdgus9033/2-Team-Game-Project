@@ -7,7 +7,15 @@
     <link href="./css/style.css" rel="stylesheet" />
   </head>
   <body>
-    <div id="modal"></div>
+    <div id="modal-wrapper">
+      <div id="backdrop"></div>
+      <div id="modal">
+        <div id="player-setting">
+          <div id="player-1-setting">dddd</div>
+          <div id="player-2-setting">ddddd</div>
+        </div>
+      </div>
+    </div>
     <div id="container">
       <div id="game-status-wrapper">
         <div id="player-1"></div>
@@ -19,7 +27,7 @@
       </div>
       <div id="canvas-wrapper"></div>
     </div>
-
+    <script src="./js/modal.js"></script>
     <script src="./js/game.js"></script>
     <script src="./js/app.js"></script>
   </body>

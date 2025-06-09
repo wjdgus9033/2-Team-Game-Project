@@ -1,25 +1,36 @@
 // --------------- 참조 함수 --------------
 
+function gameInitFn() {
+  this.context = null;
+  this.stone = [];
+  this.boardStatus = [];
+  this.currentRound = 0;
+  this.activePlayer = 1;
+  this.isOver = false;
+  player1El.style.border = "none";
+  player2El.style.border = "none";
+}
+
 function startFn() {
+  this.init();
+
   this.canvas.width = 720;
   this.canvas.height = 720;
   this.canvas.style.display = "block";
   this.cellSize = (this.canvas.width + this.canvas.height) / 2 / this.boardCell;
   this.context = this.canvas.getContext("2d");
   this.canvas.id = "game-board";
+  this.canvas.addEventListener("mousemove", handleHover);
   this.canvas.addEventListener("click", handleClick);
   canvasWrapper.insertBefore(this.canvas, canvasWrapper.childNodes[0]);
   this.drawBoard();
   this.createBoardStatus();
-  generateWinningCombos(this.boardCell, this.toWin);
 
   turnCountEl.textContent = `${this.currentRound}턴`;
   turnPlayerEl.textContent = `${
     this.player[this.activePlayer].name
   }의 차례입니다.`;
-      player1El.style.background = "rgb(145, 236, 246)";
-  player1El.style.borderBottom = "3px solid rgb(22, 22, 22)";
-  console.log(this.boardStatus);
+  player1El.style.borderBottom = "1.5rem solid rgb(22, 22, 22)";
 }
 
 function handleClick(e) {
@@ -49,6 +60,54 @@ function createBoardStatusFn() {
   );
 }
 
+function handleHover(e) {
+  if (game.isOver) return;
+
+  const rect = game.canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  const col = Math.floor(x / game.cellSize);
+  const row = Math.floor(y / game.cellSize);
+
+  // 셀 유효성 검사
+  if (game.boardStatus[row][col] !== game.defaultValue) return;
+
+  // 전체 보드 다시 그리기 (이전에 그려둔 hover 지우기)
+  game.drawBoard();
+
+  // 기존 돌 다시 그리기
+  for (let r = 0; r < game.boardCell; r++) {
+    for (let c = 0; c < game.boardCell; c++) {
+      const val = game.boardStatus[r][c];
+      if (val !== game.defaultValue) {
+        game.drawStone(r, c, game.player[val].color);
+      }
+    }
+  }
+
+  // hover용 스톤은 반투명
+  const hoverColor = game.player[game.activePlayer].color;
+  drawStonePreview(row, col, hoverColor);
+}
+
+function drawStonePreview(row, col, color) {
+  const ctx = game.context;
+  const cellSize = game.cellSize;
+  const centerX = cellSize / 2 + col * cellSize;
+  const centerY = cellSize / 2 + row * cellSize;
+  const radius = cellSize * 0.49;
+
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.4; // 반투명
+  ctx.fill();
+  ctx.globalAlpha = 1.0; // 원상복구
+  ctx.strokeStyle = "#aaa";
+  ctx.stroke();
+}
+
 function drawBoardFn() {
   const ctx = this.context;
   const size = (this.canvas.width + this.canvas.height) / 2;
@@ -64,7 +123,6 @@ function drawBoardFn() {
     // 세로선
     ctx.beginPath();
     ctx.moveTo(cellSize / 2 + i * cellSize, cellSize / 2);
-    console.log(cellSize / 2 + i * cellSize);
     ctx.lineTo(cellSize / 2 + i * cellSize, size - cellSize / 2);
     ctx.stroke();
 
@@ -107,21 +165,20 @@ function gameOverFn(playerNum) {
   } else {
     alert("Win" + playerNum);
   }
+
+  createStart();
 }
 
 function updateTurn(player) {
+  const backColor = "rgb(255, 230, 193)";
   turnCountEl.textContent = `${game.currentRound}턴`;
   turnPlayerEl.textContent = `${game.player[player].name}의 차례입니다.`;
 
   if (player === 1) {
-    player1El.style.background = "rgb(145, 236, 246)";
-    player2El.style.background = "inherit";
-    player1El.style.borderBottom = "3px solid rgb(22, 22, 22)";
+    player1El.style.borderBottom = "1.5rem solid rgb(22, 22, 22)";
     player2El.style.borderBottom = "none";
   } else {
-    player2El.style.background = "rgb(145, 236, 246)";
-    player1El.style.background = "inherit";
-    player2El.style.borderBottom = "3px solid rgb(255, 255, 255)";
+    player2El.style.borderBottom = "1.5rem solid rgb(255, 255, 255)";
     player1El.style.borderBottom = "none";
   }
 }

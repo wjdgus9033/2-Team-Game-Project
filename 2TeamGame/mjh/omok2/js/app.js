@@ -19,9 +19,10 @@ const game = {
   currentRound: 0,
   isOver: false,
   player: {
-    1: { name: "흑", color: "black", playerNumber: 1 },
-    2: { name: "백", color: "white", playerNumber: 2 },
+    1: {playerName: "" ,name: "흑", color: "black", playerNumber: 1},
+    2: {playerName: "" ,name: "백", color: "white", playerNumber: 2},
   },
+  init: gameInitFn,
   start: startFn,
   createBoardStatus: createBoardStatusFn,
   drawBoard: drawBoardFn,
@@ -29,6 +30,7 @@ const game = {
   switchPlayer: switchPlayerFn,
   gameOver: gameOverFn,
 };
+generateWinningCombos(game.boardCell, game.toWin);
+createStart();
 
-game.start();
 
