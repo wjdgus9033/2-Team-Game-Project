@@ -5,12 +5,10 @@ const player2El = document.getElementById("player-2");
 const turnCountEl = document.getElementById("turn-count");
 const turnPlayerEl = document.getElementById("turn-player");
 const totalTurnEl = document.getElementById("total-turn");
-let comboPatterns = [];
 
 const game = {
   canvas: document.createElement("canvas"),
   context: null,
-  stone: [],
   boardStatus: [],
   boardCell: 19,
   toWin: 5,
@@ -32,7 +30,6 @@ const game = {
   gameOver: gameOverFn,
 };
 
-generateWinningCombos(game.boardCell, game.toWin);
 createStart();
 
 

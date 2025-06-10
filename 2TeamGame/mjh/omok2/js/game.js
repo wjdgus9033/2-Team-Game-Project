@@ -2,7 +2,6 @@
 
 function gameInitFn() {
   this.context = null;
-  this.stone = [];
   this.boardStatus = [];
   this.currentRound = 0;
   this.activePlayer = 1;
@@ -97,7 +96,8 @@ function handleClick(e) {
 
   game.drawStone(row, col, game.player[game.activePlayer].color);
 
-  checkGameOver(game.boardStatus, comboPatterns);
+  checkMate(game.boardStatus, row, col, game.boardCell, game.toWin);
+  //checkGameOver(game.boardStatus, comboPatterns);
   if (!game.isOver) {
     game.currentRound++;
     game.switchPlayer();
@@ -106,8 +106,6 @@ function handleClick(e) {
 }
 
 function handleHover(e) {
-  if (game.isOver) return;
-
   const rect = game.canvas.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
@@ -167,70 +165,55 @@ function updateTurnUI(player) {
   }
 }
 
-// -------------------승리 체크용 기능 함수--------------- -
+// ------------------ 패턴검사로직 테스트 ------------------------
 
-function checkGameOver(status, combos) {
-  if (game.currentRound === 19 * 19) {
+function isOutOfBounds(row, col, boardCell) {
+  return row < 0 || col < 0 || row >= boardCell || col >= boardCell;
+}
+
+function checkMate(board, row, col, boardCell, toWin) {
+  const directions = [
+    [0, 1],
+    [1, 0],
+    [1, 1],
+    [1, -1],
+  ];
+
+  if (game.currentRound === boardCell * boardCell) {
     return game.gameOver(-1);
   }
 
-  for (const combo of combos) {
-    const values = combo.map(([row, col]) => status[row][col]);
-    if (values.every((v) => v > 0) && values.every((v) => v === values[0])) {
-      return game.gameOver(values[0]);
+  const target = board[row][col];
+
+  for (const [dRow, dCol] of directions) {
+    let cnt = 1;
+    let nRow = row + dRow;
+    let nCol = col + dCol;
+    while (
+      !isOutOfBounds(nRow, nCol, boardCell) &&
+      board[nRow][nCol] === target
+    ) {
+      cnt++;
+      nRow += dRow;
+      nCol += dCol;
     }
-  }
-  return 0;
-}
 
-// ---------------- 패턴 생성용 함수 --------------------
-
-function generateWinningCombos(boardSize, toWin) {
-  //가로(행) 콤보 체크 반복문
-  for (let row = 0; row < boardSize; row++) {
-    for (let col = 0; col <= boardSize - toWin; col++) {
-      const combo = [];
-      for (let win = 0; win < toWin; win++) {
-        combo.push([row, col + win]);
-      }
-      comboPatterns.push(combo);
+    nRow = row - dRow;
+    nCol = col - dCol;
+    while (
+      !isOutOfBounds(nRow, nCol, boardCell) &&
+      board[nRow][nCol] === target
+    ) {
+      cnt++;
+      nRow -= dRow;
+      nCol -= dCol;
     }
-  }
 
-  //세로(열) 콤보 체크 반복문
-  for (let row = 0; row <= boardSize - toWin; row++) {
-    for (let col = 0; col < boardSize; col++) {
-      const combo = [];
-      for (let win = 0; win < toWin; win++) {
-        combo.push([row + win, col]);
-      }
-      comboPatterns.push(combo);
-    }
-  }
-
-  //대각선(\) 콤보 체크 반복문
-  for (let row = 0; row <= boardSize - toWin; row++) {
-    for (let col = 0; col <= boardSize - toWin; col++) {
-      const combo = [];
-      for (let win = 0; win < toWin; win++) {
-        combo.push([row + win, col + win]);
-      }
-      comboPatterns.push(combo);
+    if (cnt >= toWin) {
+      game.isOver = true;
+      return game.gameOver(target);
     }
   }
 
-  //대각선(/) 콤보 체크 반복문
-  // 0 0 1 2
-  // 1 0 1 2
-  // 2 0 1 2
-
-  for (let row = 0; row <= boardSize - toWin; row++) {
-    for (let col = toWin - 1; col < boardSize; col++) {
-      const combo = [];
-      for (let win = 0; win < toWin; win++) {
-        combo.push([row + win, col - win]);
-      }
-      comboPatterns.push(combo);
-    }
-  }
+  return;
 }
