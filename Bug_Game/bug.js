@@ -2,6 +2,11 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const restartBtn = document.getElementById("restartBtn");
+const restartBtn1 = document.getElementById("restartBtn1");
+const backgroundSound = new Audio("./sound/background.mp3");
+const hitSound = new Audio("./sound/hitsound.mp3");
+const failhitSound = new Audio("./sound/failhit.mp3");
+backgroundSound.loop = true;
 
 
 let bugs = [];
@@ -11,6 +16,19 @@ let timeLeft = 60;
 let timerInterval;
 let gameInterval;
 let isGameOver = false;
+
+let lives = 5;
+const maxLives = 5;
+
+const heartImage = new Image();
+heartImage.src = "./img/heart.png";
+
+document.getElementById("playBtn").addEventListener("click", () => {
+    document.getElementById("startOverlay").style.display = "none";
+    backgroundSound.currentTime = 0;
+    backgroundSound.play();
+    startGame();
+});
 
 
 function spawnBug() {
@@ -50,10 +68,10 @@ function draw() {
             bug.x += bug.vx;
             bug.y += bug.vy;
 
-            if(bug.x<0 || bug.x+bug.size>canvas.width){
-                bug.vx*= -1;
+            if (bug.x < 0 || bug.x + bug.size > canvas.width) {
+                bug.vx *= -1;
             }
-            if(bug.y<0 || bug.y + bug.size > canvas.height){
+            if (bug.y < 0 || bug.y + bug.size > canvas.height) {
                 bug.vy *= -1;
             }
 
@@ -64,28 +82,39 @@ function draw() {
         }
 
         ctx.restore();
+
     });
 
     ctx.save();
-    ctx.font = "22px 'Bagel Fat One', sans-serif"; 
+    ctx.font = "22px 'Bagel Fat One', sans-serif";
     ctx.fillStyle = "black";
     ctx.textAlign = "right";
 
-    ctx.fillText(`점수 : ${score}`, canvas.width -10,30);
-    ctx.fillText(`최고점수 : ${highScore}`, canvas.width -10,60);
-    ctx.fillText(`남은시간 : ${timeLeft}`, canvas.width -10,90);
+    ctx.fillText(`점수 : ${score}`, canvas.width - 10, 30);
+    ctx.fillText(`최고점수 : ${highScore}`, canvas.width - 10, 60);
+    ctx.fillText(`남은시간 : ${timeLeft}`, canvas.width - 10, 90);
 
     ctx.restore();
 
-    requestAnimationFrame(draw);
+    for (let i = 0; i < lives; i++) {
+        ctx.drawImage(heartImage, 10 + i * 40, 10, 50, 50);
+    }
+
+    if (!isGameOver) {
+        requestAnimationFrame(draw);
+    }
 }
 
 canvas.addEventListener("click", (e) => {
+    hitSound.currentTime = 0;
+    hitSound.play();
     if (isGameOver) return;
 
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
+
+    let hit = false;
 
     bugs.forEach((bug) => {
         if (
@@ -94,13 +123,24 @@ canvas.addEventListener("click", (e) => {
             bug.state = "hit";
             bug.opacity = 1;
             score++;
-
+            hit = true;
             setTimeout(() => {
                 bug.state = "dead";
 
             }, 300);
         }
     });
+
+    if (!hit) {
+        lives--;
+        failhitSound.currentTime = 0;
+        failhitSound.play();
+        if (lives <= 0) {
+            endGame();
+        }
+    }
+
+
 });
 
 function startTimer() {
@@ -122,16 +162,27 @@ function endGame() {
         highScore = score;
         localStorage.setItem("highScore", highScore);
     }
+
+    backgroundSound.pause();
+    document.getElementById("finalScoreText").textContent = `최종 점수: ${score}`;
+    document.getElementById("gameOverOverlay").style.display = "flex";
+
+
+
 }
 
 function startGame() {
     score = 0;
     timeLeft = 60;
+    lives = maxLives;
     isGameOver = false;
     bugs = [];
 
-  
+    document.getElementById("gameOverOverlay").style.display = "none"; // <-- 이거 추가
+
     gameInterval = setInterval(spawnBug, 1000);
+    backgroundSound.currentTime = 0;
+    backgroundSound.play();
     startTimer();
     draw();
 }
@@ -142,5 +193,9 @@ restartBtn.addEventListener("click", () => {
     startGame();
 });
 
-startGame();
+restartBtn1.addEventListener("click", () => {
+    clearInterval(timerInterval);
+    clearInterval(gameInterval);
+    startGame();
+});
 
