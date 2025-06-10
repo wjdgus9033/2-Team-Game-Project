@@ -1,0 +1,102 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-color: rgb(248, 242, 234);
+}
+#modal-wrapper {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+}
+
+#backdrop {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: inherit;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+@media (min-width: 48rem) {
+  #modal {
+    left: calc(50% - 20rem);
+    width: 40rem;
+    height: 50vh;
+    top: 10%;
+    position: inherit;
+    background-color: rgb(250, 215, 162);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 0.5rem;
+  }
+}
+
+#modal-message {
+  width: 100%;
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  text-align: center;
+}
+
+#game-start-btn {
+  border: none;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  width: 7rem;
+  height: 2.5rem;
+  font-size: 1.2rem;
+  border-radius: 0.5rem;
+  background-color: rgb(244, 197, 126);
+}
+
+#game-start-btn:hover {
+  background-color: rgb(240, 186, 105);
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
+  width: 80%;
+  height: 48rem;
+}
+
+#game-status-wrapper {
+  display: flex;
+  width: 45rem;
+  text-align: center;
+}
+#game-status {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#player-1,
+#player-2 {
+  transition: background-color 0.3s ease;
+}
+
+#game-status,
+#player-1,
+#player-2 {
+  height: 3rem;
+  width: 33.3%;
+}
