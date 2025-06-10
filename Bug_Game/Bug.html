@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>벌레 잡기기</title>
+  <title>벌레 잡기</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&display=swap');
 
@@ -47,6 +47,7 @@
     #gameOverOverlay {
       display: none;
       color: white;
+      font-size : 30px;
       font-family: "Bagel Fat One", sans-serif;
     }
 
@@ -62,10 +63,17 @@
     #restartBtn {
       margin-top: 20px;
     }
+
+    h1{
+      font-family: "Bagel Fat One", sans-serif;
+      text-align: center;
+      font-size : 33px;
+    }
   </style>
 </head>
 
 <body>
+  <h1>모기퇴치</h1>
   <div id="gameContainer">
     <canvas id="gameCanvas" width="800" height="600"></canvas>
 
@@ -76,9 +84,10 @@
     </div>
 
     <div id="gameOverOverlay">
-      <p id="finalScoreText">점수 : 0</p>
+      <p id = "gameOverText">Game Over!</p>
+      <p id="finalScoreText">모기 퇴치 : 0 마리</p>
       <button id="restartBtn">
-        <img src="img/again.png" alt="다시시작" style="width: 100px;" />
+        <img src="img/again.png" alt="다시 시작" style="width: 100px;" />
       </button>
     </div>
   </div>

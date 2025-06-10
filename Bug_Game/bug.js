@@ -16,6 +16,7 @@ let timeLeft = 60;
 let timerInterval;
 let gameInterval;
 let isGameOver = false;
+let gameOverText = "";
 
 let lives = 5;
 const maxLives = 5;
@@ -90,7 +91,7 @@ function draw() {
     ctx.fillStyle = "black";
     ctx.textAlign = "right";
 
-    ctx.fillText(`점수 : ${score}`, canvas.width - 10, 30);
+    ctx.fillText(`모기 퇴치 : ${score} 마리`, canvas.width - 10, 30);
     ctx.fillText(`최고점수 : ${highScore}`, canvas.width - 10, 60);
     ctx.fillText(`남은시간 : ${timeLeft}`, canvas.width - 10, 90);
 
@@ -113,7 +114,7 @@ canvas.addEventListener("click", (e) => {
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-
+    
     let hit = false;
 
     bugs.forEach((bug) => {
@@ -136,7 +137,9 @@ canvas.addEventListener("click", (e) => {
         failhitSound.currentTime = 0;
         failhitSound.play();
         if (lives <= 0) {
+            gameOverText = "Game Over!";
             endGame();
+
         }
     }
 
@@ -148,6 +151,7 @@ function startTimer() {
         timeLeft--;
 
         if (timeLeft <= 0) {
+            gameOverText = "TimeOut!";
             endGame();
         }
     }, 1000);
@@ -164,7 +168,8 @@ function endGame() {
     }
 
     backgroundSound.pause();
-    document.getElementById("finalScoreText").textContent = `최종 점수: ${score}`;
+    document.getElementById("gameOverText").textContent = `${gameOverText}`;
+    document.getElementById("finalScoreText").textContent = `모기 퇴치 : ${score} 마리`;
     document.getElementById("gameOverOverlay").style.display = "flex";
 
 
@@ -178,7 +183,7 @@ function startGame() {
     isGameOver = false;
     bugs = [];
 
-    document.getElementById("gameOverOverlay").style.display = "none"; // <-- 이거 추가
+    document.getElementById("gameOverOverlay").style.display = "none"; 
 
     gameInterval = setInterval(spawnBug, 1000);
     backgroundSound.currentTime = 0;
@@ -192,10 +197,3 @@ restartBtn.addEventListener("click", () => {
     clearInterval(gameInterval);
     startGame();
 });
-
-restartBtn1.addEventListener("click", () => {
-    clearInterval(timerInterval);
-    clearInterval(gameInterval);
-    startGame();
-});
-
