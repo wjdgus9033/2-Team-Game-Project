@@ -4,7 +4,6 @@ const player1El = document.getElementById("player-1");
 const player2El = document.getElementById("player-2");
 const turnCountEl = document.getElementById("turn-count");
 const turnPlayerEl = document.getElementById("turn-player");
-const winnerEl = document.getElementById("winner");
 const totalTurnEl = document.getElementById("total-turn");
 let comboPatterns = [];
 
@@ -21,8 +20,8 @@ const game = {
   currentRound: 0,
   isOver: false,
   player: {
-    1: {name: "흑", color: "black", playerNumber: 1},
-    2: {name: "백", color: "white", playerNumber: 2},
+    1: {name: "흑", color: "black"},
+    2: {name: "백", color: "white"},
   },
   init: gameInitFn,
   start: startFn,

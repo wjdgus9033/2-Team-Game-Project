@@ -15,6 +15,7 @@ function createStart() {
   startBtn.addEventListener("click", () => {
     modalWrapperEl.style.display = "none";
     game.start();
+    updateTurnUI(game.activePlayer);
     modalEl.removeChild(startBtn);
     isRemoved = true;
   });
@@ -22,9 +23,12 @@ function createStart() {
   modalWrapperEl.addEventListener("click", () => {
     modalWrapperEl.style.display = "none";
     game.start();
+    updateTurnUI(game.activePlayer);
     if (!isRemoved) modalEl.removeChild(startBtn);
   });
 
+  player1El.style.border = "none";
+  player2El.style.border = "none";
   modalEl.appendChild(startBtn);
   modalMessageEl.appendChild(message);
 }
