@@ -19,12 +19,15 @@ function startFn() {
   this.canvas.style.display = "block";
   this.cellSize = (this.canvas.width + this.canvas.height) / 2 / this.boardCell;
   this.context = this.canvas.getContext("2d");
-  this.canvas.id = "game-board";
   this.canvas.addEventListener("mousemove", handleHover);
   this.canvas.addEventListener("click", handleClick);
-  canvasWrapper.insertBefore(this.canvas, canvasWrapper.childNodes[0]);
+  canvasWrapper.insertBefore(this.canvas, canvasWrapper.firstChild);
   this.drawBoard();
   this.createBoardStatus();
+
+  if(!this.isOver) {
+   game.currentRound = 1;
+  }
 
   turnCountEl.textContent = `${this.currentRound}턴`;
   turnPlayerEl.textContent = `${
@@ -41,17 +44,18 @@ function handleClick(e) {
   const col = Math.floor(x / game.cellSize);
   const row = Math.floor(y / game.cellSize);
 
-  if (game.boardStatus[row][col] !== game.defaultValue || game.isOver) return;
+  if (game.boardStatus[row][col] !== game.defaultValue) return;
 
   game.boardStatus[row][col] = game.activePlayer;
 
   game.drawStone(row, col, game.player[game.activePlayer].color);
 
-  console.log(game.boardStatus[row]);
-
   checkGameOver(game.boardStatus, comboPatterns);
-
-  game.switchPlayer();
+  if (!game.isOver) {
+    game.currentRound++;
+    game.switchPlayer();
+    updateTurn(game.activePlayer);
+  }
 }
 
 function createBoardStatusFn() {
@@ -70,18 +74,15 @@ function handleHover(e) {
   const col = Math.floor(x / game.cellSize);
   const row = Math.floor(y / game.cellSize);
 
-  // 셀 유효성 검사
   if (game.boardStatus[row][col] !== game.defaultValue) return;
 
-  // 전체 보드 다시 그리기 (이전에 그려둔 hover 지우기)
   game.drawBoard();
 
-  // 기존 돌 다시 그리기
-  for (let r = 0; r < game.boardCell; r++) {
-    for (let c = 0; c < game.boardCell; c++) {
-      const val = game.boardStatus[r][c];
+  for (let row = 0; row < game.boardCell; row++) {
+    for (let col = 0; col < game.boardCell; col++) {
+      const val = game.boardStatus[row][col];
       if (val !== game.defaultValue) {
-        game.drawStone(r, c, game.player[val].color);
+        game.drawStone(row, col, game.player[val].color);
       }
     }
   }
@@ -101,9 +102,9 @@ function drawStonePreview(row, col, color) {
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
   ctx.fillStyle = color;
-  ctx.globalAlpha = 0.4; // 반투명
+  ctx.globalAlpha = 0.4;
   ctx.fill();
-  ctx.globalAlpha = 1.0; // 원상복구
+  ctx.globalAlpha = 1.0;
   ctx.strokeStyle = "#aaa";
   ctx.stroke();
 }
@@ -120,13 +121,11 @@ function drawBoardFn() {
   ctx.fillRect(0, 0, 720, 720);
 
   for (let i = 0; i < cell; i++) {
-    // 세로선
     ctx.beginPath();
     ctx.moveTo(cellSize / 2 + i * cellSize, cellSize / 2);
     ctx.lineTo(cellSize / 2 + i * cellSize, size - cellSize / 2);
     ctx.stroke();
 
-    // 가로선
     ctx.beginPath();
     ctx.moveTo(cellSize / 2, cellSize / 2 + i * cellSize);
     ctx.lineTo(size - cellSize / 2, cellSize / 2 + i * cellSize);
@@ -151,26 +150,16 @@ function drawStoneFn(row, col, color) {
 
 function switchPlayerFn() {
   this.activePlayer = this.activePlayer === 1 ? 2 : 1;
-  updateTurn(this.activePlayer);
 }
 
 function gameOverFn(playerNum) {
   game.isOver = true;
-  if (playerNum === -1) {
-    alert("Draw");
-  }
-
-  if (playerNum === 1) {
-    alert("Win" + playerNum);
-  } else {
-    alert("Win" + playerNum);
-  }
+  game.activePlayer = playerNum === -1 ? -1 : playerNum;
 
   createStart();
 }
 
 function updateTurn(player) {
-  const backColor = "rgb(255, 230, 193)";
   turnCountEl.textContent = `${game.currentRound}턴`;
   turnPlayerEl.textContent = `${game.player[player].name}의 차례입니다.`;
 
@@ -186,7 +175,6 @@ function updateTurn(player) {
 // -------------------승리 체크용 기능 함수--------------- -
 
 function checkGameOver(status, combos) {
-  game.currentRound++;
   if (game.currentRound === 19 * 19) {
     return game.gameOver(-1);
   }
