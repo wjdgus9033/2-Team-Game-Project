@@ -6,6 +6,9 @@ function gameInitFn() {
   this.currentRound = 0;
   this.activePlayer = 1;
   this.isOver = false;
+  for (const player of Object.values(this.player)) {
+    player.score = 0;
+  }
 }
 
 function startFn() {

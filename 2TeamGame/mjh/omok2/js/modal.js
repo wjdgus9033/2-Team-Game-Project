@@ -11,6 +11,10 @@ function createStart() {
 
   setMessage(message, startBtn);
 
+  for(let i = 0; i < playerScoreEl.length; i++) {
+    playerScoreEl[i].innerHTML = "";
+  }
+
   startBtn.id = "game-start-btn";
   startBtn.addEventListener("click", () => {
     modalWrapperEl.style.display = "none";
@@ -30,6 +34,7 @@ function createStart() {
 
   player1El.style.border = "none";
   player2El.style.border = "none";
+  
   modalEl.appendChild(startBtn);
   modalMessageEl.appendChild(message);
 }
