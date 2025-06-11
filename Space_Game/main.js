@@ -18,9 +18,11 @@ let spaceshipX = canvas.width / 2 - 32;
 let spaceshipY = canvas.height - 64; // 이미지 높이만큼 위로 올라오게 한것
 
 let gameover = false; //true면 끝 false면 게임 중
+// 보스 총알
+let bossBulletList = [];
 
 // 이미지 가져오기
-let backgroundspaceImage, gameoverImage, alienImage, spaceshipImage, bulletImage;
+let backgroundspaceImage, gameoverImage, alienImage, spaceshipImage, bulletImage, bossalienImage;
 
 // 총알 배열
 let bulletList = [];
@@ -38,55 +40,126 @@ function Bullet() {
         this.y -= 5;
     }
     this.checkHit = function () {
-        for (let i = 0; i < enemyList.length; i++) {
-            const e = enemyList[i];
+        for (let i = 0; i < alienList.length; i++) {
+            const e = alienList[i];
+            if (!e.alive) continue;
+
             const bulletW = 10; // 총알 너비
             const bulletH = 20; // 총알 높이
-            const enemyW = 40;  // 외계인 너비
-            const enemyH = 40;  // 외계인 높이
+            const enemyW = 64;  // 외계인 너비
+            const enemyH = 64;  // 외계인 높이
 
             const isHit = this.x < e.x + enemyW &&
                 this.x + bulletW > e.x &&
-                this.y < e.y + enemyH &&
-                this.y + bulletH > e.y;
+                this.y < e.y + enemyH + 5 && //하단
+                this.y + bulletH > e.y - 5; //상단
 
             if (isHit) {
                 score++;
                 this.alive = false;
-                enemyList.splice(i, 1);
+                e.alive = false;
                 break; // 하나 맞으면 끝
+            }
+        }
+        // 보스 충돌 체크
+        for (let j = 0; j < bossList.length; j++) {
+            const boss = bossList[j];
+            if (!boss.alive) continue;
+
+            const bulletW = 10;
+            const bulletH = 20;
+
+            const isHitBoss = this.x < boss.x + boss.width &&
+                this.x + bulletW > boss.x &&
+                this.y < boss.y + boss.height &&
+                this.y + bulletH > boss.y;
+
+            if (isHitBoss) {
+                this.alive = false;
+                boss.hit(); // ← 보스 체력 줄이기
+                break;
             }
         }
     }
 }
 
+// 보스 생성
+let bossList = [];
+function bossalien() {
+    this.x = canvas.width / 2 - 64;
+    this.y = 0;
+    this.width = 128;
+    this.height = 128;
+    this.hp = 10;
+    this.alive = true;
+    this.update = function () {
+        this.y += 1; // 천천히 내려옴
+        if (this.y > 150) this.y = 150; // 고정 위치
+    };
+
+    this.hit = function () {
+        this.hp--;
+        if (this.hp <= 0) {
+            this.alive = false;
+            score += 5;
+        }
+    };
+}
+
+// 보스 총알 
+function BossBullet(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = 8;
+    this.height = 16;
+    this.alive = true;
+
+    this.update = function () {
+        this.y += 4; // 아래로 이동
+
+        const spaceshipW = 64;
+        const spaceshipH = 64;
+        const isHit = this.x < spaceshipX + spaceshipW &&
+            this.x + this.width > spaceshipX &&
+            this.y < spaceshipY + spaceshipH &&
+            this.y + this.height > spaceshipY;
+
+        if (isHit) {
+            gameover = true;
+        }
+
+        if (this.y > canvas.height) {
+            this.alive = false;
+        }
+    };
+}
 // 외계인 생성 좌표
 function randomValue(min, max) {
     let randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
     return randomNum;
 }
 // 외계인
-let enemyList = [];
+let alienList = [];
 function Enemy() {
     this.x = 0;
     this.y = 0;
+    this.alive = true;
     this.init = function () {
         this.y = 0;
         this.x = randomValue(0, canvas.width - 49);
-        enemyList.push(this);
+        alienList.push(this);
     }
     this.update = function () {
         this.y += 3; // 떨어지는 속도 올라갈 수록 빠름
 
         const spaceshipW = 64;
         const spaceshipH = 64;
-        const enemyW = 40;
-        const enemyH = 40;
+        const enemyW = 64;
+        const enemyH = 64;
         const iscrash = this.x < spaceshipX + spaceshipW &&
             this.x + enemyW > spaceshipX &&
             this.y < spaceshipH + spaceshipY &&
             this.y + enemyH > spaceshipY;
-
         if (iscrash) {
             gameover = true;
         }
@@ -111,6 +184,9 @@ function loadImage() {
 
     bulletImage = new Image();
     bulletImage.src = "images/bullet.png";
+
+    bossalienImage = new Image();
+    bossalienImage.src = "images/bossalien.png"
 }
 
 // 이미지 보여주는 함수
@@ -135,11 +211,41 @@ function render() {
         if (bulletList[i].alive) {
             ctx.drawImage(bulletImage, bulletList[i].x, bulletList[i].y, bulletWidth, bulletHeight);
         }
+
+        // ctx.strokeStyle = "red";
+        // ctx.strokeRect(bulletList[i].x, bulletList[i].y, bulletWidth, bulletHeight); //총알 표시
     }
 
     // 외계인 이미지생성
-    for (let i = 0; i < enemyList.length; i++) {
-        ctx.drawImage(alienImage, enemyList[i].x, enemyList[i].y);
+    for (let i = 0; i < alienList.length; i++) {
+        if (alienList[i].alive) {
+            ctx.drawImage(alienImage, alienList[i].x, alienList[i].y);
+        }
+
+        // ctx.strokeStyle = "lime";
+        // ctx.strokeRect(alienList[i].x, alienList[i].y, 64, 64); //충돌 박스 표시
+    }
+    // 보스 그리기
+    for (let i = 0; i < bossList.length; i++) {
+        const b = bossList[i];
+        if (b.alive) {
+            // 보스 이미지가 있으면 이미지로
+            ctx.drawImage(bossalienImage, b.x, b.y, b.width, b.height);
+
+            // 보스 체력 표시
+            ctx.fillStyle = "red";
+            ctx.fillRect(b.x, b.y - 10, b.width * (b.hp / 10), 5); // 체력바
+            ctx.strokeStyle = "white";
+            ctx.strokeRect(b.x, b.y - 10, b.width, 5);
+        }
+    }
+    // 보스 총알
+    ctx.fillStyle = "orange";
+    for (let i = 0; i < bossBulletList.length; i++) {
+        const b = bossBulletList[i];
+        if (b.alive) {
+            ctx.fillRect(b.x, b.y, b.width, b.height);
+        }
     }
 }
 
@@ -152,7 +258,7 @@ function main() {
         elapsedTime = Math.floor((Date.now() - startTime) / 1000); // 시간 업데이트
         requestAnimationFrame(main);
     } else {
-        clearInterval(enemyInterval);
+        clearInterval(alienInterval);
         ctx.drawImage(gameoverImage, 50, 150, 300, 300);
 
         // 다시 시작 버튼 생성
@@ -168,10 +274,10 @@ function main() {
 }
 // 게임시작시 화면에 버튼 안보이게해줌
 function resetGame() {
-    score = 0;
+    score = 0; // 점수 초기화
     gameover = false;
-    bulletList = [];
-    enemyList = [];
+    bulletList = []; // 총알 초기화
+    alienList = []; // 
     canShoot = true;
     document.getElementById("restart").style.display = "none";
     createEnemy();
@@ -179,6 +285,7 @@ function resetGame() {
     // 시간 초기화
     startTime = null;
     elapsedTime = 0;
+    bossBulletList = []; // 보스 총알 초기화
 }
 
 // 총 발쏴
@@ -188,9 +295,9 @@ function createBullet() {
 }
 
 // 초당 외계인 생성
-let enemyInterval;
+let alienInterval;
 function createEnemy() {
-    enemyInterval = setInterval(() => {
+    alienInterval = setInterval(() => {
         if (!gameover) {
             let e = new Enemy();
             e.init();
@@ -223,9 +330,19 @@ document.addEventListener("keyup", (e) => {
         canShoot = true; // 키를 뗐을 때 다시 발사 허용
     }
 });
+// 보스 10초마다 생성
+let lastBossTime = 0;
+
+function checkBossSpawn() {
+    if (elapsedTime >= lastBossTime + 10) {
+        const boss = new bossalien();
+        bossList.push(boss);
+        lastBossTime = elapsedTime;
+    }
+}
 
 function update() {
-    
+
     const speed = 5;
     if (keys.ArrowRight) spaceshipX += speed;
     if (keys.ArrowLeft) spaceshipX -= speed;
@@ -245,13 +362,38 @@ function update() {
             bulletList[i].checkHit();
         }
     }
+
+    // 외계인 움직이기
+    for (let i = 0; i < alienList.length; i++) {
+        alienList[i].update();
+    }
+
+    alienList = alienList.filter(e => e.alive);
     // 총알 화면 벗어나면 제거
     bulletList = bulletList.filter(b => b.y > 0 && b.alive);
 
-    // 외계인 움직이기
-    for (let i = 0; i < enemyList.length; i++) {
-        enemyList[i].update();
+    checkBossSpawn();
+
+    // 보스 업데이트
+    for (let i = 0; i < bossList.length; i++) {
+        if (bossList[i].alive) {
+            bossList[i].update();
+        }
+        // 보스 공격: 총알 발사
+        if (Math.random() < 0.02) { // 2% 확률로 매 프레임 발사 (약 1초당 1~2발)
+            bossBulletList.push(new BossBullet(bossList[i].x + bossList[i].width / 2 - 4, bossList[i].y + bossList[i].height));
+        }
     }
+    bossList = bossList.filter(b => b.alive);
+    // 보스총알 제거, 업데이트
+    for (let i = 0; i < bossBulletList.length; i++) {
+        if (bossBulletList[i].alive) {
+            bossBulletList[i].update();
+        }
+    }
+    bossBulletList = bossBulletList.filter(b => b.alive);
+
+
 }
 
 loadImage();
