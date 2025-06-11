@@ -192,7 +192,7 @@ function loadImage() {
 // 이미지 보여주는 함수
 function render() {
     ctx.drawImage(backgroundspaceImage, 0, 0, canvas.width, canvas.height);
-    ctx.drawImage(spaceshipImage, spaceshipX, spaceshipY,);
+    ctx.drawImage(spaceshipImage, spaceshipX, spaceshipY);
 
     // 버튼 추가
     ctx.fillStyle = "white";
@@ -229,7 +229,6 @@ function render() {
     for (let i = 0; i < bossList.length; i++) {
         const b = bossList[i];
         if (b.alive) {
-            // 보스 이미지가 있으면 이미지로
             ctx.drawImage(bossalienImage, b.x, b.y, b.width, b.height);
 
             // 보스 체력 표시
@@ -248,16 +247,16 @@ function render() {
         }
     }
 }
-
+let restart;
 // 실행
 function main() {
     if (!startTime) startTime = Date.now();
     if (!gameover) {
         update();
         render();
-        elapsedTime = Math.floor((Date.now() - startTime) / 1000); // 시간 업데이트
-        requestAnimationFrame(main);
+        restart = requestAnimationFrame(main);
     } else {
+        cancelAnimationFrame(restart);
         clearInterval(alienInterval);
         ctx.drawImage(gameoverImage, 50, 150, 300, 300);
 
@@ -274,18 +273,21 @@ function main() {
 }
 // 게임시작시 화면에 버튼 안보이게해줌
 function resetGame() {
+    cancelAnimationFrame(restart); // 중복 방지
+
     score = 0; // 점수 초기화
     gameover = false;
     bulletList = []; // 총알 초기화
-    alienList = []; // 
+    alienList = []; // 외계인 삭제
     canShoot = true;
-    document.getElementById("restart").style.display = "none";
-    createalien();
-    main();
-    // 시간 초기화
     startTime = null;
     elapsedTime = 0;
     bossBulletList = []; // 보스 총알 초기화
+    bossList = []; // 보스 초기화
+    lastBossTime = 0 // 보스 리스폰 초기화
+    document.getElementById("restart").style.display = "none";
+    createAlien();
+    main();
 }
 
 // 총 발쏴
@@ -296,7 +298,7 @@ function createBullet() {
 
 // 초당 외계인 생성
 let alienInterval;
-function createalien() {
+function createAlien() {
     alienInterval = setInterval(() => {
         if (!gameover) {
             let e = new alien();
@@ -334,7 +336,7 @@ document.addEventListener("keyup", (e) => {
 let lastBossTime = 0;
 
 function checkBossSpawn() {
-    if (elapsedTime >= lastBossTime + 10) {
+    if (!gameover && elapsedTime >= lastBossTime + 10) {
         const boss = new bossalien();
         bossList.push(boss);
         lastBossTime = elapsedTime;
@@ -342,6 +344,7 @@ function checkBossSpawn() {
 }
 
 function update() {
+    elapsedTime = Math.floor((Date.now() - startTime) / 1000); // 시간 업데이트
 
     const speed = 5;
     if (keys.ArrowRight) spaceshipX += speed;
@@ -397,5 +400,5 @@ function update() {
 }
 
 loadImage();
-createalien();
+createAlien();
 main();
