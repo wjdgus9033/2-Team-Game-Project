@@ -46,12 +46,12 @@ function Bullet() {
 
             const bulletW = 10; // 총알 너비
             const bulletH = 20; // 총알 높이
-            const enemyW = 64;  // 외계인 너비
-            const enemyH = 64;  // 외계인 높이
+            const alienW = 64;  // 외계인 너비
+            const alienH = 64;  // 외계인 높이
 
-            const isHit = this.x < e.x + enemyW &&
+            const isHit = this.x < e.x + alienW &&
                 this.x + bulletW > e.x &&
-                this.y < e.y + enemyH + 5 && //하단
+                this.y < e.y + alienH + 5 && //하단
                 this.y + bulletH > e.y - 5; //상단
 
             if (isHit) {
@@ -140,7 +140,7 @@ function randomValue(min, max) {
 }
 // 외계인
 let alienList = [];
-function Enemy() {
+function alien() {
     this.x = 0;
     this.y = 0;
     this.alive = true;
@@ -154,12 +154,12 @@ function Enemy() {
 
         const spaceshipW = 64;
         const spaceshipH = 64;
-        const enemyW = 64;
-        const enemyH = 64;
+        const alienW = 64;
+        const alienH = 64;
         const iscrash = this.x < spaceshipX + spaceshipW &&
-            this.x + enemyW > spaceshipX &&
+            this.x + alienW > spaceshipX &&
             this.y < spaceshipH + spaceshipY &&
-            this.y + enemyH > spaceshipY;
+            this.y + alienH > spaceshipY;
         if (iscrash) {
             gameover = true;
         }
@@ -280,7 +280,7 @@ function resetGame() {
     alienList = []; // 
     canShoot = true;
     document.getElementById("restart").style.display = "none";
-    createEnemy();
+    createalien();
     main();
     // 시간 초기화
     startTime = null;
@@ -296,10 +296,10 @@ function createBullet() {
 
 // 초당 외계인 생성
 let alienInterval;
-function createEnemy() {
+function createalien() {
     alienInterval = setInterval(() => {
         if (!gameover) {
-            let e = new Enemy();
+            let e = new alien();
             e.init();
         }
     }, 1000);
@@ -397,5 +397,5 @@ function update() {
 }
 
 loadImage();
-createEnemy();
+createalien();
 main();
