@@ -71,12 +71,13 @@ function drawStoneFn(row, col, color) {
 
 function switchPlayerFn() {
   this.activePlayer = this.activePlayer === 1 ? 2 : 1;
+  timerStatus.playerDefaultTime = Date.now();
 }
 
 function gameOverFn(player) {
   this.isOver = true;
   this.activePlayer = player === -1 ? -1 : player;
-
+  clearInterval(timerStatus.timer);
   createStart();
 }
 
@@ -97,7 +98,6 @@ function handleClick(e) {
   game.drawStone(row, col, game.player[game.activePlayer].color);
 
   checkMate(game.boardStatus, row, col, game.boardCell, game.toWin);
-  //checkGameOver(game.boardStatus, comboPatterns);
   if (!game.isOver) {
     game.currentRound++;
     game.switchPlayer();
@@ -149,6 +149,49 @@ function drawStonePreview(row, col, color) {
 
 // ------------------- 게임 상단 유저인터페이스 변경 전용 ------------------
 
+function updateScore(player, cnt, sec) {
+  let addTimeScore = -Math.abs(sec - Math.floor(sec / 2));
+  let addComboScore = cnt * 5;
+
+  if (sec <= 10 && sec > 5) {
+    game.player[player].score += 5 + addComboScore;
+  } else if (sec <= 5) {
+    game.player[player].score += 10 + addComboScore;
+  } else {
+    game.player[player].score += addComboScore + addTimeScore;
+  }
+
+  playerScoreEl[
+    game.activePlayer - 1
+  ].innerHTML = `${game.player[player].name}돌 점수 <br/>${game.player[player].score}`;
+}
+
+function updateTimeUI() {
+  timerStatus.startTime = Date.now();
+  timerStatus.playerDefaultTime = Date.now();
+  timerStatus.timer = setInterval(() => {
+    timerStatus.playerDisplayTime = Math.floor(
+      (Date.now() - timerStatus.playerDefaultTime) / 1000
+    );
+    let nowSec = Math.floor((Date.now() - timerStatus.startTime) / 1000);
+    timerStatus.mainDisplaySec = nowSec % 60;
+    timerStatus.mainDisplayMin = Math.floor(nowSec / 60);
+    timeDisplayEl.textContent =
+      timerStatus.mainDisplayMin > 0
+        ? `${timerStatus.mainDisplayMin}분${timerStatus.mainDisplaySec}초`
+        : `${timerStatus.mainDisplaySec}초`;
+
+    if (game.activePlayer === 1) {
+      player1timeEl.textContent = timerStatus.playerDisplayTime;
+      player2timeEl.textContent = "";
+    } else if (game.activePlayer === 2) {
+      player2timeEl.textContent = timerStatus.playerDisplayTime;
+      player1timeEl.textContent = "";
+    }
+  }, 1000);
+  timerStatus.timer;
+}
+
 function updateTurnUI(player) {
   if (player === 0) {
     return;
@@ -178,8 +221,9 @@ function checkMate(board, row, col, boardCell, toWin) {
     [1, 1],
     [1, -1],
   ];
+  let score = 1;
 
-  if (game.currentRound === boardCell * boardCell) {
+  if (game.currentRound === Math.pow(boardCell, 2)) {
     return game.gameOver(-1);
   }
 
@@ -194,6 +238,7 @@ function checkMate(board, row, col, boardCell, toWin) {
       board[nRow][nCol] === target
     ) {
       cnt++;
+      score++;
       nRow += dRow;
       nCol += dCol;
     }
@@ -205,15 +250,17 @@ function checkMate(board, row, col, boardCell, toWin) {
       board[nRow][nCol] === target
     ) {
       cnt++;
+      score++;
       nRow -= dRow;
       nCol -= dCol;
     }
 
     if (cnt >= toWin) {
       game.isOver = true;
+      updateScore(target, 50, timerStatus.playerDisplayTime);
       return game.gameOver(target);
     }
   }
-
+  updateScore(target, score, timerStatus.playerDisplayTime);
   return;
 }
