@@ -5,7 +5,7 @@ const restartBtn = document.getElementById("restartBtn");
 const restartBtn1 = document.getElementById("restartBtn1");
 const backgroundSound = new Audio("./sound/background.mp3");
 const hitSound = new Audio("./sound/hitsound.mp3");
-hitSound.volume = 0.7;
+hitSound.volume = 0.6;
 const failhitSound = new Audio("./sound/failhit.mp3");
 failhitSound.volume = 0.7;
 const itemhitSound = new Audio("./sound/itemhitsound.mp3");
@@ -17,6 +17,10 @@ let bugs = [];
 let items = [];
 let effects = [];
 
+let itemInterval;
+let levelUpInterval;
+let bugSpeed = 1.5;
+let currentLevel = 1;
 let score = 0;
 let highScore = localStorage.getItem("highScore") || 0;
 let timeLeft = 60;
@@ -42,23 +46,23 @@ document.getElementById("playBtn").addEventListener("click", () => {
     startGame();
 });
 
-function spawnItem(){
-    if(isGameOver) return;
+function spawnItem() {
+    if (isGameOver) return;
 
     const random = Math.random();
-    if(random > 0.5) return;
+    if (random > 0.5) return;
 
-    const type = Math.random() > 0.6 ? "life" : "time";
+    const type = Math.random() > 0.5 ? "life" : "time";
     const item = {
-        x : Math.random() * (canvas.width -100),
-        y : Math.random() * (canvas.height -100),
-        size : 70,
-        type : type,
-        image : type === "life" ? heartImage : timeitem,
-        opacity : 1,
-        state : "alive",
-        vx:(Math.random() -0.5) *0.9,
-        vy : (Math.random() - 0.5) *0.9
+        x: Math.random() * (canvas.width - 100),
+        y: Math.random() * (canvas.height - 100),
+        size: 70,
+        type: type,
+        image: type === "life" ? heartImage : timeitem,
+        opacity: 1,
+        state: "alive",
+        vx: (Math.random() - 0.5) * 0.9,
+        vy: (Math.random() - 0.5) * 0.9
     };
     items.push(item);
 
@@ -80,8 +84,8 @@ function spawnBug() {
         opacity: 1,
         image: new Image(),
         hitImage: new Image(),
-        vx: (Math.random() - 0.5) * 4,
-        vy: (Math.random() - 0.5) * 4
+        vx: (Math.random() - 0.5) * bugSpeed * 2,
+        vy: (Math.random() - 0.5) * bugSpeed * 2
     };
 
     bug.image.src = "img/bug1.png";
@@ -120,13 +124,13 @@ function draw() {
         }
         items = items.filter(item => item.state != "dead");
 
-        items.forEach(item =>{
+        items.forEach(item => {
             ctx.globalAlpha = item.opacity;
             item.x += item.vx;
             item.y += item.vy;
 
-            if(item.x<0 || item.x + item.size > canvas.width) item.vx *=-1;
-            if(item.y<0 || item.y+item.size >canvas.height) item.vy*=-1;
+            if (item.x < 0 || item.x + item.size > canvas.width) item.vx *= -1;
+            if (item.y < 0 || item.y + item.size > canvas.height) item.vy *= -1;
 
             ctx.drawImage(item.image, item.x, item.y, item.size, item.size);
         });
@@ -142,6 +146,7 @@ function draw() {
     ctx.fillText(`모기 ${score} 마리 퇴치`, canvas.width - 10, 30);
     ctx.fillText(`최고점수 : ${highScore}`, canvas.width - 10, 60);
     ctx.fillText(`남은시간 : ${timeLeft}`, canvas.width - 10, 90);
+    ctx.fillText(`레벨 :  ${currentLevel}`, canvas.width - 10 , 120 );
 
     ctx.restore();
 
@@ -153,15 +158,15 @@ function draw() {
         requestAnimationFrame(draw);
     }
 
-    effects = effects.filter(effect => effect.opacity >0);
+    effects = effects.filter(effect => effect.opacity > 0);
 
-    effects.forEach(effect=>{
+    effects.forEach(effect => {
         ctx.globalAlpha = effect.opacity;
         ctx.fillStyle = effect.color;
         ctx.font = "40px 'Bagel Fat One', cursive";
         ctx.fillText(effect.text, effect.x, effect.y);
-        
-        effect.y -=1;
+
+        effect.y -= 1;
         effect.opacity -= 0.02;
     });
 }
@@ -174,7 +179,7 @@ canvas.addEventListener("click", (e) => {
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-    
+
     let hit = false;
     let itemhit = false;
     bugs.forEach((bug) => {
@@ -192,33 +197,33 @@ canvas.addEventListener("click", (e) => {
         }
     });
 
-    items.forEach((item) =>{
-        if(item.state === "alive" && mouseX >= item.x && mouseX <= item.x + item.size && mouseY >= item.y && mouseY <= item.y + item.size){
+    items.forEach((item) => {
+        if (item.state === "alive" && mouseX >= item.x && mouseX <= item.x + item.size && mouseY >= item.y && mouseY <= item.y + item.size) {
             itemhit = true;
             item.state = "dead";
 
-            if(item.type === "life"){
-                if(lives<maxLives) lives++;
+            if (item.type === "life") {
+                if (lives < maxLives) lives++;
                 effects.push({
-                    x:item.x,
-                    y:item.y,
-                    text : "+1",
-                    color : "red",
-                    opacity : 1
+                    x: item.x,
+                    y: item.y,
+                    text: "+1",
+                    color: "red",
+                    opacity: 1
                 });
 
 
             }
-            else if(item.type === "time"){
-                if(timeLeft<=55) timeLeft+=5;
-                else timeLeft =60;
+            else if (item.type === "time") {
+                if (timeLeft <= 55) timeLeft += 5;
+                else timeLeft = 60;
 
                 effects.push({
-                    x : item.x,
+                    x: item.x,
                     y: item.y,
-                    text : "+ 5초",
-                    color : "blue",
-                    opacity:1
+                    text: "+ 5초",
+                    color: "blue",
+                    opacity: 1
                 });
             }
         }
@@ -234,12 +239,10 @@ canvas.addEventListener("click", (e) => {
 
         }
     }
-    if(itemhit){
-        itemhitSound.currentTime =0;
+    if (itemhit) {
+        itemhitSound.currentTime = 0;
         itemhitSound.play();
     }
-
-
 });
 
 function startTimer() {
@@ -266,6 +269,7 @@ function endGame() {
     backgroundSound.pause();
     document.getElementById("gameOverText").textContent = `${gameOverText}`;
     document.getElementById("finalScoreText").textContent = `모기 ${score} 마리 퇴치`;
+    document.getElementById("levelCurrentText").textContent = `레벨 : ${currentLevel}`;
     document.getElementById("gameOverOverlay").style.display = "flex";
 
 
@@ -278,18 +282,50 @@ function startGame() {
     lives = maxLives;
     isGameOver = false;
     bugs = [];
+    bugSpeed = 1.5;
+    currentLevel = 1;
 
-    document.getElementById("gameOverOverlay").style.display = "none"; 
+    clearInterval(timerInterval);
+    clearInterval(gameInterval);
+    clearInterval(itemInterval);
+    clearInterval(levelUpInterval);
+
+    document.getElementById("gameOverOverlay").style.display = "none";
     itemInterval = setInterval(spawnItem, 5000);
-    gameInterval = setInterval(spawnBug, 1000);
+    gameInterval = setInterval(()=>{
+        let bugCount = Math.min(1+Math.floor(currentLevel/2),5);
+        spawnBugWave(bugCount);
+    }, 1000);
+
     backgroundSound.currentTime = 0;
     backgroundSound.play();
     startTimer();
     draw();
+    levelUpInterval = setInterval(() => {
+        if (isGameOver) return;
+        bugSpeed += 0.6;
+        currentLevel++;
+
+        effects.push({
+            x: canvas.width / 2 - 100,
+            y: canvas.height / 2,
+            text: `레벨 ${currentLevel}!`,
+            color: "purple",
+            opacity: 1
+        });
+    }, 30000);
+
+}
+function spawnBugWave(count){
+    for(let i =0; i<count; i++){
+        spawnBug();
+    }
 }
 
 restartBtn.addEventListener("click", () => {
     clearInterval(timerInterval);
     clearInterval(gameInterval);
+    clearInterval(levelUpInterval);
+    clearInterval(itemInterval);
     startGame();
 });
