@@ -14,8 +14,8 @@ let elapsedTime = 0;
 // 점수
 let score = 0;
 // 우주선좌표
-let spaceshipX = canvas.width / 2 - 32;
-let spaceshipY = canvas.height - 64; // 이미지 높이만큼 위로 올라오게 한것
+let spaceshipX = canvas.width / 2 - 25;
+let spaceshipY = canvas.height - 61; // 이미지 높이만큼 위로 올라오게 한것
 
 let gameover = false; //true면 끝 false면 게임 중
 // 보스 총알
@@ -117,7 +117,7 @@ function BossBullet(x, y) {
     this.update = function () {
         this.y += 4; // 아래로 이동
 
-        const spaceshipW = 64;
+        const spaceshipW = 50;
         const spaceshipH = 64;
         const isHit = this.x < spaceshipX + spaceshipW &&
             this.x + this.width > spaceshipX &&
@@ -152,7 +152,7 @@ function alien() {
     this.update = function () {
         this.y += 3; // 떨어지는 속도 올라갈 수록 빠름
 
-        const spaceshipW = 64;
+        const spaceshipW = 50;
         const spaceshipH = 64;
         const alienW = 64;
         const alienH = 64;
@@ -192,7 +192,7 @@ function loadImage() {
 // 이미지 보여주는 함수
 function render() {
     ctx.drawImage(backgroundspaceImage, 0, 0, canvas.width, canvas.height);
-    ctx.drawImage(spaceshipImage, spaceshipX, spaceshipY);
+    ctx.drawImage(spaceshipImage, spaceshipX, spaceshipY, 50, 64);
 
     // 버튼 추가
     ctx.fillStyle = "white";
