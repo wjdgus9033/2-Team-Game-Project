@@ -1,57 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>벌레 잡기기</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Stylish&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>벌레 잡기</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&display=swap');
 
-        body {
-            background-color: rgba(143, 92, 33, 0.897);
-        }
+    body {
+      background-color: rgba(143, 92, 33, 0.897);
+      margin: 0;
+      padding: 0;
+    }
 
-        canvas {
-            border: 2px solid #333;
-            background-image: url("./img/background.png");
-            display: block;
-            margin: 20px auto;
-           
+    canvas {
+      border: 2px solid #333;
+      background-image: url("./img/background.png");
+      display: block;
+      margin: 0 auto;
+      cursor: url("img/hand.png") 24 24, auto;
+    }
 
-             cursor : url("img/hand.png") 24 24, auto;
-        }
+    #gameContainer {
+      position: relative;
+      width: 800px;
+      height: 600px;
+      margin: 20px auto;
+    }
 
+    #startOverlay,
+    #gameOverOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
 
-        #restartBtn {
-            position: absolute;
-            bottom: -120px;
-            right: 10px;
-            background: none;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-        }
-    </style>
+    #gameOverOverlay {
+      display: none;
+      color: white;
+      font-size : 30px;
+      font-family: "Bagel Fat One", sans-serif;
+    }
 
+    #playBtn,
+    #restartBtn1,
+    #restartBtn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    #restartBtn {
+      margin-top: 20px;
+    }
+
+    h1{
+      font-family: "Bagel Fat One", sans-serif;
+      text-align: center;
+      font-size :43px;
+      color :  aliceblue;
+    }
+  </style>
 </head>
 
-<body>
+<body>0.
+  <h1>모기퇴치</h1>
+  <div id="gameContainer">
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
 
-
-
-    <div id="gameContainer" style="position: relative; width: 800px; margin: 20px auto;">
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
-
-        <button id="restartBtn">
-            <img src="img/again.png" alt="다시시작" style="width: 100px;">
-
-        </button>
-
+    <div id="startOverlay">
+      <button id="playBtn">
+        <img src="img/start.png" alt="시작" style="width: 300px;" />
+      </button>
     </div>
 
+    <div id="gameOverOverlay">
+      <p id = "gameOverText">Game Over!</p>
+      <p id="finalScoreText">모기 0 마리 퇴치 </p>
+      <button id="restartBtn">
+        <img src="img/again.png" alt="다시 시작" style="width: 100px;" />
+      </button>
+    </div>
+  </div>
 
-    <script src="bug.js"></script>
+  <script src="bug.js"></script>
 </body>
-
 </html>
