@@ -1,11 +1,21 @@
-export const backgroundSound = new Audio("./sound/background.mp3");
-export const hitSound = new Audio("./sound/hitsound.mp3");
-hitSound.volume = 0.6;
-export const failhitSound = new Audio("./sound/failhit.mp3");
-failhitSound.volume = 0.7;
-export const itemhitSound = new Audio("./sound/itemhitsound.mp3");
-itemhitSound.volume = 0.5;
-backgroundSound.loop = true;
+const soundFiles = {
+    hit: "./sound/hitsound.mp3",
+    fail: "./sound/failhit.mp3",
+    itemhit: "./sound/itemhitsound.mp3",
+    background: "./sound/background.mp3"
+};
 
+const sounds = {};
+for (const key in soundFiles) {
+    sounds[key] = new Audio(soundFiles[key]);
+    sounds[key].volume = 0.7;
+}
 
+export const backgroundSound = sounds.background;
 
+export function playSound(name) {
+    if (sounds[name]) {
+        sounds[name].currentTime = 0;
+        sounds[name].play();
+    }
+}
