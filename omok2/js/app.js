@@ -4,14 +4,24 @@ const player1El = document.getElementById("player-1");
 const player2El = document.getElementById("player-2");
 const turnCountEl = document.getElementById("turn-count");
 const turnPlayerEl = document.getElementById("turn-player");
-const winnerEl = document.getElementById("winner");
 const totalTurnEl = document.getElementById("total-turn");
-let comboPatterns = [];
+const timeDisplayEl = document.getElementById("time-display");
+const player1timeEl = document.getElementById("player-1-timedisplay");
+const player2timeEl = document.getElementById("player-2-timedisplay");
+const playerScoreEl = document.querySelectorAll(".player-score")
+
+const timerStatus = {
+  timer: "",
+  startTime: 0,
+  playerDefaultTime: 0,
+  playerDisplayTime : 0,
+  mainDisplayMin: 0,
+  mainDisplaySec: 0,
+}
 
 const game = {
   canvas: document.createElement("canvas"),
   context: null,
-  stone: [],
   boardStatus: [],
   boardCell: 19,
   toWin: 5,
@@ -21,8 +31,8 @@ const game = {
   currentRound: 0,
   isOver: false,
   player: {
-    1: {name: "흑", color: "black", playerNumber: 1},
-    2: {name: "백", color: "white", playerNumber: 2},
+    1: {name: "흑", color: "black", score: 0},
+    2: {name: "백", color: "white", score: 0},
   },
   init: gameInitFn,
   start: startFn,
@@ -33,7 +43,6 @@ const game = {
   gameOver: gameOverFn,
 };
 
-generateWinningCombos(game.boardCell, game.toWin);
 createStart();
 
 

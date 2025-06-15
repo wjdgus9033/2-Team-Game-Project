@@ -11,10 +11,16 @@ function createStart() {
 
   setMessage(message, startBtn);
 
+  for(let i = 0; i < playerScoreEl.length; i++) {
+    playerScoreEl[i].innerHTML = "";
+  }
+
   startBtn.id = "game-start-btn";
   startBtn.addEventListener("click", () => {
     modalWrapperEl.style.display = "none";
     game.start();
+    updateTurnUI(game.activePlayer);
+    updateTimeUI();
     modalEl.removeChild(startBtn);
     isRemoved = true;
   });
@@ -22,9 +28,13 @@ function createStart() {
   modalWrapperEl.addEventListener("click", () => {
     modalWrapperEl.style.display = "none";
     game.start();
+    updateTurnUI(game.activePlayer);
     if (!isRemoved) modalEl.removeChild(startBtn);
   });
 
+  player1El.style.border = "none";
+  player2El.style.border = "none";
+  
   modalEl.appendChild(startBtn);
   modalMessageEl.appendChild(message);
 }
@@ -38,8 +48,10 @@ function setMessage(message, startBtn) {
     startBtn.textContent = "다시시작";
     message.innerHTML = `${
       game.player[game.activePlayer].name
-    }돌이 승리하였습니다.<br>
-    소요된 턴 : ${game.currentRound}`;
+    }돌이 승리하였습니다.<br/>
+    소요된 턴 : ${game.currentRound} <br/>
+    획득한 점수 : ${game.player[game.activePlayer].score} <br/>
+    게임 시간 : ${Math.floor((Date.now() - timerStatus.startTime) / 1000)}초`;
   } else {
     startBtn.textContent = "시작하기";
     message.textContent = "게임을 시작하기";

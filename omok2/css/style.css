@@ -77,26 +77,48 @@ body {
   height: 48rem;
 }
 
+#canvas-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+canvas {
+  order: 2;
+}
+
+#player-1-score {
+  order: 1;
+}
+
+#player-2-score {
+  order: 3;
+}
+
+.player-score {
+  width: 10rem;
+  text-align: center;
+  font-size: 2rem;
+}
+
 #game-status-wrapper {
   display: flex;
   width: 45rem;
   text-align: center;
 }
 #game-status {
+  width: 33.3%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 4rem;
 }
 
 #player-1,
 #player-2 {
-  transition: background-color 0.3s ease;
-}
-
-#game-status,
-#player-1,
-#player-2 {
-  height: 3rem;
   width: 33.3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: border 0.3s ease;
 }
