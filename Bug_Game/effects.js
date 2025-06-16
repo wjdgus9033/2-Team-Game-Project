@@ -6,7 +6,7 @@ export function drawEffects(ctx) {
         ctx.save();
         ctx.globalAlpha = effect.opacity;
         ctx.fillStyle = effect.color;
-        ctx.font = "26px 'Bagel Fat One', sans-serif";
+        ctx.font = "28px 'Bagel Fat One', sans-serif";
         ctx.fillText(effect.text, effect.x, effect.y);
         ctx.restore();
 

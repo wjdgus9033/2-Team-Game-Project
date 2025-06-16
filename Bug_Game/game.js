@@ -63,7 +63,7 @@ function startTimer() {
         if (isGameOver) return;
         timeLeft--;
         if (timeLeft <= 0) {
-            endGame("시간 초과!");
+            endGame("Time Over!");
         }
     }, 1000);
 }

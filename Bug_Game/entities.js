@@ -134,9 +134,7 @@ export function handleClick(mouseX, mouseY) {
 
     if (!hit) {
         entities.items.forEach(item => {
-            if (item.state === "alive" &&
-                mouseX >= item.x && mouseX <= item.x + item.size &&
-                mouseY >= item.y && mouseY <= item.y + item.size) {
+            if (item.state === "alive" && mouseX >= item.x && mouseX <= item.x + item.size && mouseY >= item.y && mouseY <= item.y + item.size) {
                 item.state = "dead";
                 itemhit = true;
 
@@ -145,7 +143,7 @@ export function handleClick(mouseX, mouseY) {
                     effects.push({
                         x: mouseX,
                         y: mouseY,
-                        text: "+하트",
+                        text: "+1",
                         color: "red",
                         opacity: 1
                     });
@@ -154,7 +152,7 @@ export function handleClick(mouseX, mouseY) {
                     effects.push({
                         x: mouseX,
                         y: mouseY,
-                        text: "+시간",
+                        text: "+30초",
                         color: "blue",
                         opacity: 1
                     });
