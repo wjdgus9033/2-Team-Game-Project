@@ -11,22 +11,36 @@ h1 {
 
 }
 
-a {
-  color: red;
-  /* 원하는 색상 */
+.cardlink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.exlink {
+  color: #666;
+  font-size: 14px;
   text-decoration: none;
-  /* 밑줄 제거 */
 }
 
-a:hover {
-  color: blue;
+.exlink:hover {
+  text-decoration: underline;
 }
 
-.btn-primary {
-  display: block;
-  margin-left: auto;
-  width: fit-content;
+.gamelink {
+  background-color: crimson;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
   font-weight: bold;
+  font-size: 15px;
+  text-decoration: none;
+  margin-left: auto;
+}
+
+.gamelink:hover {
+  background-color: darkred;
 }
 
 .card img {
