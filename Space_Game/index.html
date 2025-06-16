@@ -28,24 +28,33 @@
         transform: scale(1.05);
     }
 
-    a {
-        color: red;
-        /* 원하는 색상 */
+    .exgame {
+        position: absolute;
+        bottom: -40px;
+        right: 5px;
+        font-size: 14px;
+        background-color: crimson;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: bold;
         text-decoration: none;
-        /* 밑줄 제거 */
+        z-index: 5;
     }
 
-    a:hover {
-        color: blue;
+    .exgame:hover {
+        background-color: darkred;
     }
 </style>
 
 <body>
     <button id="restart" onclick="resetGame()">다시 시작 </button>
 
+    <div id="canvasW" style="position: relative; width: 400px; height: 700px;">
+        <a href="game explanation.html" class="exgame">게임 설명 및 구조</a>
+    </div>
+
     <script src="main.js"></script>
-    <br>
-    <a href="game explanation.html">게임 설명 및 구조</a>
 </body>
 
 </html>

@@ -6,7 +6,7 @@ canvas = document.createElement("canvas");
 ctx = canvas.getContext("2d")
 canvas.width = 400;
 canvas.height = 700;
-document.body.appendChild(canvas);
+document.getElementById("canvasW").appendChild(canvas);
 
 // 시간 변수
 let startTime = null;
