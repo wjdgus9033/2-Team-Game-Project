@@ -1,17 +1,24 @@
-const modalWrapperEl = document.getElementById("modal-wrapper");
-const modalMessageEl = document.getElementById("modal-message");
-const modalEl = document.getElementById("modal");
+import { modalWrapperEl, modalMessageEl, modalEl, player1El, player2El, playerScoreEl } from "./dom.js";
+import { game } from "./game.js";
+import { updateTurnUI } from "./function.js";
+import { timerStatus } from "./timer.js";
 
-function createStart() {
+export function createStart() {
   const startBtn = document.createElement("button");
   const message = document.createElement("p");
-  let isRemoved = false;
+  const aEl = document.createElement("a");
 
   modalWrapperEl.style.display = "flex";
 
   setMessage(message, startBtn);
+  aEl.href = "./guide.html";
+  aEl.textContent = "설명서 보기";
+  aEl.target = "_blank"
+  aEl.style.textDecoration = "none";
+  aEl.style.color = "#777777";
+  aEl.style.fontSize = "1.5rem";
 
-  for(let i = 0; i < playerScoreEl.length; i++) {
+  for (let i = 0; i < playerScoreEl.length; i++) {
     playerScoreEl[i].innerHTML = "";
   }
 
@@ -22,22 +29,23 @@ function createStart() {
     updateTurnUI(game.activePlayer);
     timerStatus.updateTimeUI();
     modalEl.removeChild(startBtn);
-    isRemoved = true;
   });
 
-  modalWrapperEl.addEventListener("click", () => {
+  modalWrapperEl.addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON" || e.target.tagName === "A") return;
     modalWrapperEl.style.display = "none";
     game.start();
     updateTurnUI(game.activePlayer);
     timerStatus.updateTimeUI();
-    if (!isRemoved) modalEl.removeChild(startBtn);
+    modalEl.removeChild(startBtn);
   });
 
   player1El.style.border = "none";
   player2El.style.border = "none";
-  
+
   modalEl.appendChild(startBtn);
   modalMessageEl.appendChild(message);
+  modalMessageEl.appendChild(aEl);
 }
 
 function setMessage(message, startBtn) {
@@ -58,3 +66,5 @@ function setMessage(message, startBtn) {
     message.textContent = "게임을 시작하기";
   }
 }
+
+
