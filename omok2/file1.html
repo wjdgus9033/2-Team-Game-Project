@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: rgb(255, 253, 248);
+      }
+      ul {
+        list-style: none;
+      }
+
+      #container {
+        display: flex;
+        flex-direction: row;
+      }
+
+      #side-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgb(205, 255, 255);
+        width: 10rem;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #side-nav > ul {
+        width: 10rem;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+      }
+
+      #side-nav > ul > li { 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 4rem;
+      }
+
+      #side-nav > ul > li:hover {
+        background-color: rgb(84, 255, 255);
+      }
+
+      #content-box {
+        margin-left: 10rem;
+        padding-top: 1rem;
+        padding-left: 1rem;
+      }
+
+      #content-box > ul > li {
+        margin-bottom: 1rem;
+      }
+
+      #flowchart {
+        width: 100%;
+        height: 100%;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="side-nav">
+        <ul>
+          <li onclick="turnOff('rule')">게임 룰</li>
+          <li onclick="turnOff('chart')">
+            <span id="flowchart">차트 자세히 보기</span>
+          </li>
+        </ul>
+      </div>
+      <div id="content-box">
+      </div>
+    </div>
+<script>
+  function turnOff(contentType) {
+    const contentBox = document.getElementById("content-box");
+    let html = "<ul>";
+
+    if (contentType === "rule") {
+      html += `
+        <li><h2>게임 룰</h2></li>
+        <li>가로, 세로, 대각선으로 5줄을 쌓으면 승리합니다.</li>
+        <li>경과시간 30초를 초과할 시 상대방에게 턴이 변경됩니다.</li>
+        <li>빠르게 돌을 놓을 시 점수가 더욱 높아집니다.</li>
+        <li>상대보다 빠르게 5줄을 완성하여 승리하세요.</li>
+      `;
+    } else if (contentType === "chart") {
+      html += `
+        <li><h2>플로우차트</h2></li>
+        <li><img src="./img/chart.png" style="max-width: 100%;"/></li>
+      `;
+    }
+
+    html += "</ul>";
+    contentBox.innerHTML = html;
+  }
+</script>
+  </body>
+</html>

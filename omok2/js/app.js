@@ -11,12 +11,13 @@ const player2timeEl = document.getElementById("player-2-timedisplay");
 const playerScoreEl = document.querySelectorAll(".player-score")
 
 const timerStatus = {
-  timer: "",
+  timer: null,
   startTime: 0,
   playerDefaultTime: 0,
   playerDisplayTime : 0,
   mainDisplayMin: 0,
   mainDisplaySec: 0,
+  updateTimeUI: updateTimeUIFn,
 }
 
 const game = {

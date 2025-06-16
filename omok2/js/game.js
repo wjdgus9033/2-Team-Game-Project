@@ -165,34 +165,40 @@ function updateScore(player, cnt, sec) {
   }
 
   playerScoreEl[
-    game.activePlayer - 1
+    player - 1
   ].innerHTML = `${game.player[player].name}돌 점수 <br/>${game.player[player].score}`;
 }
 
-function updateTimeUI() {
-  timerStatus.startTime = Date.now();
-  timerStatus.playerDefaultTime = Date.now();
-  timerStatus.timer = setInterval(() => {
-    timerStatus.playerDisplayTime = Math.floor(
-      (Date.now() - timerStatus.playerDefaultTime) / 1000
+function updateTimeUIFn() {
+  this.startTime = Date.now();
+  this.playerDefaultTime = Date.now();
+  this.timer = setInterval(() => {
+    this.playerDisplayTime = Math.floor(
+      (Date.now() - this.playerDefaultTime) / 1000
     );
-    let nowSec = Math.floor((Date.now() - timerStatus.startTime) / 1000);
-    timerStatus.mainDisplaySec = nowSec % 60;
-    timerStatus.mainDisplayMin = Math.floor(nowSec / 60);
+    let nowSec = Math.floor((Date.now() - this.startTime) / 1000);
+    this.mainDisplaySec = nowSec % 60;
+    this.mainDisplayMin = Math.floor(nowSec / 60);
     timeDisplayEl.textContent =
-      timerStatus.mainDisplayMin > 0
-        ? `${timerStatus.mainDisplayMin}분${timerStatus.mainDisplaySec}초`
-        : `${timerStatus.mainDisplaySec}초`;
+      this.mainDisplayMin > 0
+        ? `${this.mainDisplayMin}분${this.mainDisplaySec}초`
+        : `${this.mainDisplaySec}초`;
 
     if (game.activePlayer === 1) {
-      player1timeEl.textContent = timerStatus.playerDisplayTime;
+      player1timeEl.textContent = this.playerDisplayTime;
       player2timeEl.textContent = "";
     } else if (game.activePlayer === 2) {
-      player2timeEl.textContent = timerStatus.playerDisplayTime;
+      player2timeEl.textContent = this.playerDisplayTime;
       player1timeEl.textContent = "";
     }
-  }, 1000);
-  timerStatus.timer;
+
+    if (this.playerDisplayTime > 30) {
+      game.currentRound++;
+      game.switchPlayer();
+      updateTurnUI(game.activePlayer);
+    }
+  }, 16.67);
+  this.timer;
 }
 
 function updateTurnUI(player) {
@@ -259,7 +265,6 @@ function checkMate(board, row, col, boardCell, toWin) {
     }
 
     if (cnt >= toWin) {
-      game.isOver = true;
       updateScore(target, 50, timerStatus.playerDisplayTime);
       return game.gameOver(target);
     }

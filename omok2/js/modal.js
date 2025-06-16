@@ -20,7 +20,7 @@ function createStart() {
     modalWrapperEl.style.display = "none";
     game.start();
     updateTurnUI(game.activePlayer);
-    updateTimeUI();
+    timerStatus.updateTimeUI();
     modalEl.removeChild(startBtn);
     isRemoved = true;
   });
@@ -29,6 +29,7 @@ function createStart() {
     modalWrapperEl.style.display = "none";
     game.start();
     updateTurnUI(game.activePlayer);
+    timerStatus.updateTimeUI();
     if (!isRemoved) modalEl.removeChild(startBtn);
   });
 
