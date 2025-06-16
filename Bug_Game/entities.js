@@ -145,7 +145,7 @@ export function handleClick(mouseX, mouseY) {
                     effects.push({
                         x: mouseX,
                         y: mouseY,
-                        text: "+하트",
+                        text: "+1",
                         color: "red",
                         opacity: 1
                     });
@@ -154,7 +154,7 @@ export function handleClick(mouseX, mouseY) {
                     effects.push({
                         x: mouseX,
                         y: mouseY,
-                        text: "+시간",
+                        text: "+30초",
                         color: "blue",
                         opacity: 1
                     });
