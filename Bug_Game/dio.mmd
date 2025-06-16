@@ -1,0 +1,40 @@
+flowchart LR
+    Start(["게임 시작"]) --> Init["게임 초기화<br>점수:0, 체력:5, 시간:60초, 레벨:1"]
+    Init --> SpawnMosquito["모기 등장"]
+    SpawnMosquito --> PlayerAction{"모기 터치"}
+    PlayerAction -- 예 --> IncreaseScore["점수 +1"]
+    IncreaseScore --> SpawnMosquito
+    PlayerAction -- 아니오 --> DecreaseHP["체력 -1"]
+    DecreaseHP --> HPCheck{"체력이 0인가?"}
+    HPCheck -- 체력 : 0 --> GameOver(["게임 종료"])
+    HPCheck -- 체력 > 0 --> ContinueGame(["게임 진행"])
+    ContinueGame --> SpawnItem["아이템 등장"] & TimeCheck{"시간이 0초인가?"}
+    SpawnItem --> PlayerItemClick{"아이템 클릭"}
+    PlayerItemClick -- 예 --> timeEffect["시간 아이템 효과 적용"] & heartEffect["체력 아이템 효과 적용"]
+    timeEffect --> timeUp["시간 + 30초"]
+    heartEffect --> heartUp["체력 +1"]
+    ItemEffect["ItemEffect"] --> ContinueGame
+    PlayerItemClick -- 아니오 --> ContinueGame
+    TimeCheck -- 시간 종료 --> GameOver
+    TimeCheck -- 시간 남음 --> SpawnMosquito
+
+     Start:::Sky
+     Init:::Sky
+     SpawnMosquito:::Sky
+     PlayerAction:::Sky
+     IncreaseScore:::Sky
+     DecreaseHP:::Sky
+     HPCheck:::Sky
+     GameOver:::Sky
+     ContinueGame:::Sky
+     SpawnItem:::Sky
+     TimeCheck:::Sky
+     PlayerItemClick:::Sky
+     timeEffect:::Sky
+     heartEffect:::Sky
+     timeUp:::Sky
+     heartUp:::Sky
+     ItemEffect:::Sky
+    classDef Sky stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+
+

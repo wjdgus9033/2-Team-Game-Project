@@ -134,9 +134,7 @@ export function handleClick(mouseX, mouseY) {
 
     if (!hit) {
         entities.items.forEach(item => {
-            if (item.state === "alive" &&
-                mouseX >= item.x && mouseX <= item.x + item.size &&
-                mouseY >= item.y && mouseY <= item.y + item.size) {
+            if (item.state === "alive" && mouseX >= item.x && mouseX <= item.x + item.size && mouseY >= item.y && mouseY <= item.y + item.size) {
                 item.state = "dead";
                 itemhit = true;
 
