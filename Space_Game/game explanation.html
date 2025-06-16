@@ -15,22 +15,78 @@
         height: 100vh;
         margin: 0;
     }
-    div {
+
+    .space {
         display: flex;
         flex-direction: column;
-        height: 680px;
-        width: 1400px;
+        height: 900px;
+        width: 1000px;
         margin: 0;
         justify-content: center;
         align-items: center;
         background-color: white;
     }
+
+    .ex {
+        display: flex;
+        gap: 80px;
+    }
+
+    li {
+        font-size: 18px;
+    }
+
+    .btna {
+        margin-top: 20px;
+        display: flex;
+        gap: 30px;
+        font-weight: bold;
+    }
+
+    a {
+        text-decoration: none;
+        color: black;
+    }
+    a:hover{
+        color:red;
+    }
 </style>
 
 <body>
-    <div>
-        <h1>게임 구조</h1>
+    <div class="space">
+        <h1>게임 구조 및 설명</h1>
         <img src="images/explanation.PNG" alt="">
+        <div class="ex">
+            <div>
+                <h2>게임 설명</h2>
+                <ul>
+                    <li>게임 시작 시 우주선 등장</li>
+                    <li>우주선은 좌우 방향키로 이동 가능</li>
+                    <li>스페이스바로 총알 발사</li>
+                    <li>외계인 또는 보스를 죽이면 점수를 얻는다.</li>
+                    <li>외계인 또는 보스 총알에 충돌 시 게임 종료</li>
+                </ul>
+            </div>
+            <div>
+                <h2>조작 방법</h2>
+                <ul>
+                    <li>키보드 : ← → 좌우 방향키로 이동</li>
+                    <li>스페이스바 : 총알 발사</li>
+                </ul>
+                <h2>게임 구성 요소</h2>
+                <ul>
+                    <li>우주선 (플레이어)</li>
+                    <li>총알 (위로 날아감)</li>
+                    <li>외계인 (아래로 내려옴)</li>
+                    <li>보스 (10초마다 등장)</li>
+                    <li>보스 총알 (아래로 발사됨)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="btna">
+            <a href="../Space_Game/index.html" class="btn btn-primary" style="font-size: 17px;">외계인 격퇴 이동</a>
+            <a href="../2TeamGame/index.html">게임 모음으로 이동</a>
+        </div>
     </div>
 </body>
 
