@@ -29,7 +29,22 @@
       margin: 20px auto;
     }
 
-    #startOverlay,
+    #startOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 10;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      flex-direction: row;
+    }
+
     #gameOverOverlay {
       position: absolute;
       top: 0;
@@ -38,22 +53,23 @@
       height: 100%;
       background-color: rgba(0, 0, 0, 0.7);
       z-index: 10;
+
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
-    }
-
-    #gameOverOverlay {
       display: none;
+
       color: white;
       font-size: 30px;
       font-family: "Bagel Fat One", sans-serif;
     }
 
+  
     #playBtn,
     #restartBtn1,
-    #restartBtn {
+    #restartBtn,
+    #howtoBtn {
       background: none;
       border: none;
       cursor: pointer;
@@ -79,9 +95,14 @@
     <canvas id="gameCanvas" width="800" height="600"></canvas>
 
     <div id="startOverlay">
-      <button id="playBtn">
-        <img src="img/start.png" alt="시작" style="width: 300px;" />
+      <button id="howtoBtn">
+        <img src="img/howto.png" alt="방법" style="width: 200px;" />
       </button>
+
+      <button id="playBtn">
+        <img src="img/start.png" alt="시작" style="width: 200px;" />
+      </button>
+
     </div>
 
     <div id="gameOverOverlay">
@@ -96,7 +117,7 @@
   </div>
 
 
-<script type="module" src="./main.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 
 </html>

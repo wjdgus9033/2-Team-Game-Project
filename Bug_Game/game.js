@@ -108,7 +108,7 @@ export function updateGameState(action) {
             if (lives < maxLives) lives++;
             break;
         case 'addTime':
-            timeLeft = Math.min(timeLeft + 5, 60);
+            timeLeft = Math.min(timeLeft + 30, 60);
             break;
     }
 }

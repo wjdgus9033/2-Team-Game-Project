@@ -1,5 +1,6 @@
 import { updateGameState } from './game.js';
-import { effects } from './effects.js';
+import { effects, addSmokeEffect } from './effects.js';
+import { playSound } from './sound.js';
 
 const heartImage = new Image();
 heartImage.src = "./img/heart.png";
@@ -12,6 +13,13 @@ bugImage.src = "./img/bug1.png";
 
 const bugHitImage = new Image();
 bugHitImage.src = "./img/d_bug.png";
+
+const bombItemImage = new Image();
+bombItemImage.src = "./img/bomb.png";
+
+const smokeImage = new Image();
+smokeImage.src = "./img/smoke.png";
+
 
 let bugSpeed = 1.5;
 
@@ -38,15 +46,24 @@ export const entities = {
     },
 
     spawnItem() {
-        if (Math.random() > 0.5) return;  
+        if (Math.random() > 0.5) return;
 
-        const type = Math.random() > 0.5 ? "life" : "time";
+        let type;
+        const itemRand = Math.random();
+        if (itemRand < 0.7) {
+            type = "bomb";
+        } else if (itemRand < 0.55) {
+            type = "life";
+        } else {
+            type = "time";
+        }
+
         const item = {
             x: Math.random() * (800 - 70),
             y: Math.random() * (600 - 70),
             size: 70,
             type: type,
-            image: type === "life" ? heartImage : timeitemImage,
+            image: type === "life" ? heartImage : (type === "time" ? timeitemImage : bombItemImage),
             opacity: 1,
             state: "alive",
             vx: (Math.random() - 0.5) * 0.9,
@@ -90,9 +107,12 @@ export const entities = {
             if (item.y < 0 || item.y + item.size > canvas.height) item.vy *= -1;
 
             ctx.globalAlpha = item.opacity;
-            ctx.drawImage(item.image, item.x, item.y, item.size, item.size);
+            if (item.type === "bomb") {
+                ctx.drawImage(item.image, item.x, item.y, 120, 100);
+            } else {
+                ctx.drawImage(item.image, item.x, item.y, item.size, item.size);
+            }
         });
-
         ctx.globalAlpha = 1;
     },
 
@@ -134,28 +154,34 @@ export function handleClick(mouseX, mouseY) {
 
     if (!hit) {
         entities.items.forEach(item => {
-            if (item.state === "alive" && mouseX >= item.x && mouseX <= item.x + item.size && mouseY >= item.y && mouseY <= item.y + item.size) {
+            if (item.state === "alive" &&
+                mouseX >= item.x && mouseX <= item.x + item.size &&
+                mouseY >= item.y && mouseY <= item.y + item.size) {
                 item.state = "dead";
                 itemhit = true;
 
                 if (item.type === "life") {
                     updateGameState('addLife');
-                    effects.push({
-                        x: mouseX,
-                        y: mouseY,
-                        text: "+1",
-                        color: "red",
-                        opacity: 1
-                    });
+                    effects.push({ x: mouseX, y: mouseY, text: "+1", color: "red", opacity: 1 });
                 } else if (item.type === "time") {
                     updateGameState('addTime');
-                    effects.push({
-                        x: mouseX,
-                        y: mouseY,
-                        text: "+30초",
-                        color: "blue",
-                        opacity: 1
-                    });
+                    effects.push({ x: mouseX, y: mouseY, text: "+30초", color: "blue", opacity: 1 });
+                } else if (item.type === "bomb") {
+                    const aliveBugs = entities.bugs.filter(b => b.state === "alive");
+                    const killedCount = aliveBugs.length;
+
+                    addSmokeEffect(mouseX, mouseY);
+                    playSound('itemhit');
+                    playSound('spray');
+                    setTimeout(() => {
+                        aliveBugs.forEach(bug => {
+                            if (bug.state === "alive") {
+                                bug.state = "hit";
+                                updateGameState('increaseScore');
+                            }
+                        });
+                        effects.push({ x: mouseX, y: mouseY, text: `모기 ${killedCount}마리 처치!`, color: "yellow", opacity: 1 });
+                    }, 1500);
                 }
             }
         });

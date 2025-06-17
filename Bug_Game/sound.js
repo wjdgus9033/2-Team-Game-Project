@@ -2,7 +2,8 @@ const soundFiles = {
     hit: "./sound/hitsound.mp3",
     fail: "./sound/failhit.mp3",
     itemhit: "./sound/itemhitsound.mp3",
-    background: "./sound/background.mp3"
+    background: "./sound/background.mp3",
+    spray: "./sound/spray.mp3"    
 };
 
 const sounds = {};
@@ -12,6 +13,7 @@ for (const key in soundFiles) {
 }
 
 export const backgroundSound = sounds.background;
+backgroundSound.loop = true;
 
 export function playSound(name) {
     if (sounds[name]) {

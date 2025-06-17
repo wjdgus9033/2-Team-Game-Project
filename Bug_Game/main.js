@@ -7,12 +7,19 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const restartBtn = document.getElementById("restartBtn");
+const howtoBtn = document.getElementById("howtoBtn");
 
 document.getElementById("playBtn").addEventListener("click", () => {
     document.getElementById("startOverlay").style.display = "none";
     backgroundSound.currentTime = 0;
+    backgroundSound.loop = true;
     backgroundSound.play();
     startGame();
+});
+
+
+howtoBtn.addEventListener("click", () => {
+    window.location.href = "info.html";
 });
 
 restartBtn.addEventListener("click", () => {
